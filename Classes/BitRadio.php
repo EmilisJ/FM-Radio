@@ -38,7 +38,12 @@ class BitRadio implements Radio{
 
   public function loadIndicators($data){
     if($_SESSION['power'] == 'on' ){
-      return  header('Location: http://localhost/_radio/index.php?volume='.$_SESSION['volume'].' db&tune='.$_SESSION['tune'].' FM&station='.$_SESSION['station']);
+      if(floatval($_SESSION['volume']) > 0){
+        $volume = '%2B'.$_SESSION['volume'];
+      } else {
+        $volume = $_SESSION['volume'];
+      }
+      return  header('Location: http://localhost/_radio/index.php?volume='.$volume.' db&tune='.$_SESSION['tune'].' FM&station='.$_SESSION['station']);
     } else {
       return  header('Location: http://localhost/_radio/index.php');
     }

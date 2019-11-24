@@ -5,9 +5,9 @@ use App\BitRadio;
 use App\RadioSetting;
 
 //Atkomentuoti mygtuką index.php
-// if($_POST['kill']){
-//      session_unset(); 
-// }
+if($_POST['kill']){
+     session_unset(); 
+}
 
 if(empty($_SESSION)){
      $radio = new BitRadio(number_format(10.0,1), number_format(88.0,1));
@@ -15,8 +15,6 @@ if(empty($_SESSION)){
 } else {
      $radio = new BitRadio($_SESSION['volume'], $_SESSION['tune'], $_SESSION['station']);
 }
-
-// $connector = new RadioSetting;
 
 $radio->identifyButton();   
 $radio->loadIndicators($_SESSION);

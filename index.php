@@ -7,7 +7,12 @@
 
     $domain = $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI']; 
     if($_SESSION['power'] == 'on' && (strcasecmp($domain, 'localhost/_radio/') == 0 || strcasecmp($domain, 'localhost/_radio/index.php') == 0)){
-        header('Location: http://localhost/_radio/index.php?volume='.$_SESSION['volume'].' db&tune='.$_SESSION['tune'].' FM&station='.$_SESSION['station']);
+        if(floatval($_SESSION['volume']) > 0){
+            $volume = '%2B'.$_SESSION['volume'];
+        } else {
+            $volume = $_SESSION['volume'];
+        }
+        header('Location: http://localhost/_radio/index.php?volume='.$volume.' db&tune='.$_SESSION['tune'].' FM&station='.$_SESSION['station']);
         exit;
     }
 
@@ -15,14 +20,14 @@
     $connector->initiateRadio();
 
     //Prašom naudoti debuginimui :)
-    // var_dump($_SESSION);
-    // echo '<br>';
-    // var_dump($connector->getSavedRadioStation(1));
-    // echo '<br>';
-    // var_dump($connector->getSavedRadioStation(2));
-    // echo '<br>';
-    // var_dump($connector->getSavedRadioStation(3));
-    // echo '<br>';
+    var_dump($_SESSION);
+    echo '<br>';
+    var_dump($connector->getSavedRadioStation(1));
+    echo '<br>';
+    var_dump($connector->getSavedRadioStation(2));
+    echo '<br>';
+    var_dump($connector->getSavedRadioStation(3));
+    echo '<br>';
 
 ?>
 
@@ -70,7 +75,7 @@
                 <button name="load" value="3">Load 3</button>
             </div>
             <!-- Žudymo mygtukas -->
-            <!-- <div class="btn"><button name="kill" value="kill">kill</buttodrop table radio_settings;n></div> -->
+            <div class="btn"><button name="kill" value="kill">kill</buttodrop table radio_settings;n></div>
             <div class="btn"><button name="power" value="power">On/Off</button></div>
         </form>
     </div>
