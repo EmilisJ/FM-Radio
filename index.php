@@ -1,35 +1,22 @@
 <?php
-    session_start();
-    
-    require_once('vendor/autoload.php');
-    use App\BitRadio;
-    use App\RadioSetting;
+session_start();
+require_once('vendor/autoload.php');
+use App\BitRadio;
+use App\RadioSetting;
 
-    $domain = $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI']; 
-    if($_SESSION['power'] == 'on' && (strcasecmp($domain, 'localhost/_radio/') == 0 || strcasecmp($domain, 'localhost/_radio/index.php') == 0)){
-        if(floatval($_SESSION['volume']) > 0){
-            $volume = '%2B'.$_SESSION['volume'];
-        } else {
-            $volume = $_SESSION['volume'];
-        }
-        header('Location: http://localhost/_radio/index.php?volume='.$volume.' db&tune='.$_SESSION['tune'].' FM&station='.$_SESSION['station']);
-        exit;
-    }
+$connector = new RadioSetting;
+$connector->loadRadioSettings($_SERVER,$_SESSION);
 
-    $connector = new RadioSetting;
-    $connector->initiateRadio();
-
-    //Prašom naudoti debuginimui :)
-    var_dump($_SESSION);
-    echo '<br>';
-    var_dump($connector->getSavedRadioStation(1));
-    echo '<br>';
-    var_dump($connector->getSavedRadioStation(2));
-    echo '<br>';
-    var_dump($connector->getSavedRadioStation(3));
-    echo '<br>';
-
-?>
+//Debuginimui
+// var_dump($_SESSION);
+// echo '<br>';
+// var_dump($connector->getSavedRadioStation(1));
+// echo '<br>';
+// var_dump($connector->getSavedRadioStation(2));
+// echo '<br>';
+// var_dump($connector->getSavedRadioStation(3));
+// echo '<br>';
+// ?>
 
 <!DOCTYPE html>
 <html lang="en">

@@ -77,6 +77,12 @@ class BitRadio implements Radio{
   }
 
   public function identifyButton(){
+    //Atkomentuoti KILL mygtuką index.php formoje;
+    if($_POST['kill']){
+        session_unset();
+        header('Location: http://localhost/_radio/index.php');
+        exit;
+    }
     if($_POST){
       if($_POST['power']){
         $this->power();
@@ -122,6 +128,7 @@ class BitRadio implements Radio{
     }
     return $data;
   }
+
   //Buttons
   public function power(){
     if($_SESSION['power']=='off'){
@@ -226,5 +233,16 @@ class BitRadio implements Radio{
     $row = $con->getSavedRadioStation(3);
     $_SESSION['station'] = $row['STATION'];
     $_SESSION['tune'] = $row['TUNE'];
+  }
+
+  public static function playTheRadio($session){
+    if(empty($session)){
+      $radio = new BitRadio(10.0,88.0);
+      $session = $radio->startSession($session);
+    } else {
+      $radio = new BitRadio($session['volume'], $session['tune'], $session['station']);
+    }
+    $radio->identifyButton(); 
+    $radio->loadIndicators($session);
   }
 }

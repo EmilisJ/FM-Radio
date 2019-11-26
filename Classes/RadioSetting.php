@@ -2,13 +2,13 @@
 namespace App;
 
 class RadioSetting extends Dbh {
-    //Pravartus metodas :)
-    // public function dropRadioTable(){
-    //     $pdo = $this->connect();
-    //     $sql = "DROP TABLE IF EXISTS radio_settings;";
-    //     $stmt = $pdo->prepare($sql);
-    //     $stmt->execute();
-    // }
+
+    public static function dropRadioTable(){
+        $pdo = $this->connect();
+        $sql = "DROP TABLE IF EXISTS radio_settings;";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+    }
 
     public function migrateRadioTable(){
         $pdo = $this->connect();
@@ -47,7 +47,20 @@ class RadioSetting extends Dbh {
         return $row;
     }
 
-    public function initiateRadio(){
+    public function passOrRedirectIndex($server, $session){
+        $domain = $server['SERVER_NAME'] . $server['REQUEST_URI']; 
+        if(($session['power'] == 'on') && (strcasecmp($domain, 'localhost/_radio/') == 0 || strcasecmp($domain, 'localhost/_radio/index.php') == 0)){
+            if(floatval($session['volume']) > 0){
+                $volume = '%2B'.$session['volume'];
+            } else {
+                $volume = $session['volume'];
+            }
+            header('Location: http://localhost/_radio/index.php?volume='.$volume.' db&tune='.$session['tune'].' FM&station='.$session['station']);
+            exit;
+        }
+    }
+
+    public function migrateRadio(){
         $this->migrateRadioTable();
         $result = $this->connect()->prepare("SELECT count(*) FROM radio_settings");
         $result->execute();
@@ -59,5 +72,10 @@ class RadioSetting extends Dbh {
             header('Location: http://localhost/_radio/index.php');
             exit;
         }
+    }
+    
+    public function loadRadioSettings($server, $session){
+        Self::passOrRedirectIndex($server, $session);
+        Self::migrateRadio();
     }
 }
