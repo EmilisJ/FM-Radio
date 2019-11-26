@@ -54,7 +54,7 @@ class BitRadio implements Radio{
       return $data['tune'] = $this->getTune();
   }
   public function showRadioStationName($data){
-    $strTune = str_replace('.',',',strval($data['tune']));
+    $strTune = str_replace('.',',',strval(number_format($data['tune'],1)));
     $stations = $this::stationInArea;
     if(in_array($strTune, $stations)){
       $key = array_search($strTune, $stations);
@@ -78,11 +78,11 @@ class BitRadio implements Radio{
 
   public function identifyButton(){
     //Atkomentuoti KILL mygtuką index.php formoje;
-    if($_POST['kill']){
-        session_unset();
-        header('Location: http://localhost/_radio/index.php');
-        exit;
-    }
+    // if($_POST['kill']){
+    //     session_unset();
+    //     header('Location: http://localhost/_radio/index.php');
+    //     exit;
+    // }
     if($_POST){
       if($_POST['power']){
         $this->power();
@@ -139,17 +139,17 @@ class BitRadio implements Radio{
     return null;
   }
   public function volumeUp(){
-    if(number_format(floatval($_SESSION['volume']),1) < Self::maxVol){
-      $_SESSION['volume'] = number_format(floatval($_SESSION['volume']) + 0.5 ,1);
+    if(number_format($_SESSION['volume'],1) < Self::maxVol){
+      $_SESSION['volume'] = number_format($_SESSION['volume'] + 0.5 ,1);
     }
   }
   public function volumeDown(){
-    if(number_format(floatval($_SESSION['volume']),1) > Self::minVol){
-      $_SESSION['volume'] = number_format(floatval($_SESSION['volume']) - 0.5 ,1);
+    if(number_format($_SESSION['volume'],1) > Self::minVol){
+      $_SESSION['volume'] = number_format($_SESSION['volume'] - 0.5 ,1);
     }
   }
   public function goToNexStationUp(){
-    $tune = $_SESSION['tune'];
+    $tune = number_format($_SESSION['tune'],1);
     $stations = $this::stationInArea;
     $code = true;
     if( $tune <= Self::maxFm){
@@ -163,12 +163,12 @@ class BitRadio implements Radio{
           $code = false;
         }
       }
-      $_SESSION['tune'] = number_format($tune,1);
+      $_SESSION['tune'] = number_format($tune,2);
       $_SESSION['station'] = Self::showRadioStationName($_SESSION);
     }
   }
   public function goToNexStationDown(){
-    $tune = $_SESSION['tune'];
+    $tune = number_format($_SESSION['tune'],1);
     $stations = $this::stationInArea;
     $code = true;
     if( $tune >= Self::minFm){
@@ -182,25 +182,25 @@ class BitRadio implements Radio{
           $code = false;
         }
       }
-      $_SESSION['tune'] = number_format($tune,1);
+      $_SESSION['tune'] = number_format($tune,2);
       $_SESSION['station'] = Self::showRadioStationName($_SESSION);
     }
   }
   public function tuneDown(){
-    if(number_format(floatval($_SESSION['tune']),1) > Self::minFm){
-      $_SESSION['tune'] = number_format(floatval($_SESSION['tune'] - 0.1),1);
+    if(number_format($_SESSION['tune'],1) > Self::minFm){
+      $_SESSION['tune'] = number_format($_SESSION['tune'] - 0.1,2);
       $_SESSION['station'] = Self::showRadioStationName($_SESSION);
-    } elseif (number_format(floatval($_SESSION['tune']),1) == Self::minFm){
-      $_SESSION['tune'] = number_format(floatval(Self::maxFm),1);
+    } elseif (number_format($_SESSION['tune'],1) == Self::minFm){
+      $_SESSION['tune'] = number_format(Self::maxFm,2);
       $_SESSION['station'] = Self::showRadioStationName($_SESSION);
     }
   }
   public function tuneUp(){
-    if(number_format(floatval($_SESSION['tune']),1) < Self::maxFm){
-      $_SESSION['tune'] = number_format(floatval($_SESSION['tune'] + 0.1),1);
+    if(number_format($_SESSION['tune'],1) < Self::maxFm){
+      $_SESSION['tune'] = number_format($_SESSION['tune'] + 0.1,2);
       $_SESSION['station'] = Self::showRadioStationName($_SESSION);
-    } elseif (number_format(floatval($_SESSION['tune']),1) == Self::maxFm){
-      $_SESSION['tune'] = number_format(floatval(Self::minFm),1);
+    } elseif (number_format($_SESSION['tune'],1) == Self::maxFm){
+      $_SESSION['tune'] = number_format(Self::minFm,2);
       $_SESSION['station'] = Self::showRadioStationName($_SESSION);
     }
   }
@@ -220,25 +220,29 @@ class BitRadio implements Radio{
     $con = new RadioSetting;
     $row = $con->getSavedRadioStation(1);
     $_SESSION['station'] = $row['STATION'];
-    $_SESSION['tune'] = $row['TUNE'];
+    $_SESSION['tune'] = number_format($row['TUNE'],2);
   }
   public function loadPresets2(){
     $con = new RadioSetting;
     $row = $con->getSavedRadioStation(2);
     $_SESSION['station'] = $row['STATION'];
-    $_SESSION['tune'] = $row['TUNE'];
+    $_SESSION['tune'] = number_format($row['TUNE'],2);
   }
   public function loadPresets3(){
     $con = new RadioSetting;
     $row = $con->getSavedRadioStation(3);
     $_SESSION['station'] = $row['STATION'];
-    $_SESSION['tune'] = $row['TUNE'];
+    $_SESSION['tune'] = number_format($row['TUNE'],2);
   }
 
   public static function playTheRadio($session){
     if(empty($session)){
-      $radio = new BitRadio(10.0,88.0);
+      $radio = new BitRadio(number_format(10.0,1),number_format(88.0,2));
       $session = $radio->startSession($session);
+      if($_GET['st']== 'go'){
+        header('Location: http://localhost/_radio/index.php');
+        exit;
+      }
     } else {
       $radio = new BitRadio($session['volume'], $session['tune'], $session['station']);
     }

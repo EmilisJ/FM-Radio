@@ -5,9 +5,9 @@ use App\BitRadio;
 use App\RadioSetting;
 
 $connector = new RadioSetting;
-$connector->loadRadioSettings($_SERVER,$_SESSION);
+$connector->loadRadioSettings($_SERVER,$_SESSION); 
 
-//Debuginimui
+// Debuginimui
 // var_dump($_SESSION);
 // echo '<br>';
 // var_dump($connector->getSavedRadioStation(1));
@@ -61,8 +61,8 @@ $connector->loadRadioSettings($_SERVER,$_SESSION);
                 <button name="save" value="3">Save 3</button>
                 <button name="load" value="3">Load 3</button>
             </div>
-            <!-- Žudymo mygtukas -->
-            <div class="btn"><button name="kill" value="kill">kill</buttodrop table radio_settings;n></div>
+            <!-- Kill logika patalpinta BitRadio->identifyButton; -->
+            <!-- <div class="btn"><button name="kill" value="kill">kill</buttodrop table radio_settings;n></div> -->
             <div class="btn"><button name="power" value="power">On/Off</button></div>
         </form>
     </div>

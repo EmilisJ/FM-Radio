@@ -3,12 +3,13 @@ namespace App;
 
 class RadioSetting extends Dbh {
 
-    public static function dropRadioTable(){
-        $pdo = $this->connect();
-        $sql = "DROP TABLE IF EXISTS radio_settings;";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute();
-    }
+    //Gal pravers :)
+    // public static function dropRadioTable(){
+    //     $pdo = $this->connect();
+    //     $sql = "DROP TABLE IF EXISTS radio_settings;";
+    //     $stmt = $pdo->prepare($sql);
+    //     $stmt->execute();
+    // }
 
     public function migrateRadioTable(){
         $pdo = $this->connect();
@@ -48,6 +49,10 @@ class RadioSetting extends Dbh {
     }
 
     public function passOrRedirectIndex($server, $session){
+        if(empty($_SESSION)){
+            header('Location: http://localhost/_radio/controller.php?st=go');
+            exit;
+        }
         $domain = $server['SERVER_NAME'] . $server['REQUEST_URI']; 
         if(($session['power'] == 'on') && (strcasecmp($domain, 'localhost/_radio/') == 0 || strcasecmp($domain, 'localhost/_radio/index.php') == 0)){
             if(floatval($session['volume']) > 0){
